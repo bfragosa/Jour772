@@ -1,3 +1,0 @@
-"0","maryland_expenses <- maryland_expenses |> mutate(expenditure_date=mdy(expenditure_date))"
-"0",""
-"0","head(maryland_expenses)"

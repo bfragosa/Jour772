@@ -168,7 +168,7 @@ maryland_expenses <- maryland_expenses |> mutate(expenditure_date=mdy(expenditur
 head(maryland_expenses)
 ```
 
-**Answer: With the mutate functionand mdy function,it helped R read the expenditure date as an actual date column and not a character, eliminating the <chr> from underneath it.**
+**Answer: With the mutate function and mdy function,it helped R read the expenditure date as an actual date column and not a character, eliminating the <chr> from underneath it.**
 
 Lubridate has functions for basically any type of character date format: mdy, ymd, even datetimes like ymd_hms.
 
