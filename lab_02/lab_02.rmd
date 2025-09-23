@@ -92,7 +92,7 @@ maryland_expenses %>%
     .default = "Out of state"
     )) %>%
 group_by(spending_location) %>%
-summarise(total_amount = sum(amount))
+summarise(total_amount = sum(amount, na.rm=TRUE))
 ```
 
 **Q6.** Choose your own adventure: using either the UMD courses or campaign expenses data, ask and answer a question that is different than the previous ones. You can use one of the ones you provided in the pre_lab. **Which departments offered the most seats in the spring 2023 term?**
