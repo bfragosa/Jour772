@@ -1,0 +1,5 @@
+"0","cleaned_md_grant_loans <- md_grant_loans |>"
+"0","  mutate(grantee_clean=n_gram_merge(Grantee)) |>"
+"0","  select(Grantee, grantee_clean, everything())"
+"0",""
+"0","cleaned_md_grant_loans"

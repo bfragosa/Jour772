@@ -1,0 +1,7 @@
+"0","second <- cleaned_md_grant_loans |>"
+"0","  group_by(grantee_clean) |>"
+"0","  summarise("
+"0","    count=n()"
+"0","  ) |>"
+"0","  filter(str_detect(grantee_clean, '^w|^W')) |>"
+"0","  arrange(desc(count))"

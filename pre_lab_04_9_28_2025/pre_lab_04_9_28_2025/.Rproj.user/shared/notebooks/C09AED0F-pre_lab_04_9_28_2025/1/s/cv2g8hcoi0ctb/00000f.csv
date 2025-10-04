@@ -1,0 +1,5 @@
+"0","# Load data"
+"0","md_grant_loans <- read_csv(""data/State_of_Maryland_Grant_and_Loan_Data__FY2009_to_FY2022_20250115.csv"")"
+"0",""
+"0","# Display it"
+"0","md_grant_loans"
