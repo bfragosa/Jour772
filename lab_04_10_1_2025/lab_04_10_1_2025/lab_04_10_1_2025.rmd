@@ -104,12 +104,10 @@ expenses_summary %>%
 
 **A4**: YOUR CODE HERE
 ```{r}
-expenses_summary %>% 
+media_expenses %>% 
   filter(
     str_detect(committee_name, "Moore  Wes For Maryland")|
     str_detect(committee_name, "Moore Miller For Maryland Slate")) %>% 
-  filter(
-    str_detect(expense_category, "Media")) %>% 
   
 group_by(payee_clean) %>%
   summarize(total_amount = sum(amount)) %>% 
