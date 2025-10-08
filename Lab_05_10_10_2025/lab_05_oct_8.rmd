@@ -3,6 +3,7 @@ title: "lab_05"
 author: "Derek Willis"
 date: "2025-01-16"
 output: html_document
+Name: Brandyn Fragosa
 ---
 
 ```{r setup, include=FALSE}
