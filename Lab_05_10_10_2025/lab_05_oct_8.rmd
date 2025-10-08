@@ -153,7 +153,7 @@ Calls_each_week <- Weekly_overdose %>%
   arrange(desc(count))
 ```
 
-**Q2a. I found that the most calls were made on Saturdays with there being 628 calls on that day, a 15.5% of the total calls made during the week. The lowest amount of calls made during the week was on Thursdays with there being 526 calls that day, 12.79% of the total calls made during the week.**
+**Q2a. I found that the most calls were made on Saturdays with there being 638 calls on that day, a 15.5% of the total calls made during the week. The lowest amount of calls made during the week was on Thursdays with there being 526 calls that day, 12.79% of the total calls made during the week.**
 
 
 Q3. Now let's look at locations. 
