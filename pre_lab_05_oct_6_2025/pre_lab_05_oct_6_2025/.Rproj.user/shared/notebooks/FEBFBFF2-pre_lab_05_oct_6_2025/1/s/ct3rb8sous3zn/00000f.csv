@@ -1,0 +1,3 @@
+"0","voters_by_county <- read_csv(""tabula-Eligible Active Voters by County - GG22.csv"")"
+"2","Error: 'tabula-Eligible Active Voters by County - GG22.csv' does not exist in current working directory ('C:/Users/frago/OneDrive/Desktop/Jour772/pre_lab_05_oct_6_2025/pre_lab_05_oct_6_2025').
+"

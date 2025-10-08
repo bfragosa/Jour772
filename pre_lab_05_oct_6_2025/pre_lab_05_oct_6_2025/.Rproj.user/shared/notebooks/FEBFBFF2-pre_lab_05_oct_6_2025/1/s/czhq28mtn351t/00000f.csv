@@ -1,0 +1,32 @@
+"0","install.packages(""pdftools"")"
+"2","WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+"
+"2","trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.5/pdftools_3.6.0.zip'
+"
+"2","Content type 'application/zip'"
+"2"," length 9810588 bytes (9.4 MB)
+"
+"2","downloaded 9.4 MB
+
+"
+"1","package ‘pdftools’ successfully unpacked and MD5 sums checked
+"
+"1","
+"
+"1",""
+"1","The downloaded binary packages are in
+	C:\Users\frago\AppData\Local\Temp\RtmpoZOZRJ\downloaded_packages"
+"1",""
+"1","
+"
+"0","library(pdftools)"
+"0",""
+"0","#pdf_text reads the text from a PDF file."
+"0","text <- pdf_text(""Eligible Active Voters by County - GG22.pdf"")"
+"0",""
+"0","# splits each page by newlines into separate lines"
+"0","#unlist() flattens the data for easy processing into a table"
+"0",""
+"0","text_data <- unlist(strsplit(text, ""\n""))"
