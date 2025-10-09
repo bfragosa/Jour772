@@ -1,0 +1,45 @@
+---
+title: "Brandyn's Data Notebook"
+author: "Brandyn Fragosa"
+date: "2025-10-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+options(scipen=999)
+library(tidyverse)
+library(janitor)
+library(lubridate)
+```
+
+```{r}
+fatal_police_shootings_data <- read_csv("fatal-police-shootings-data.csv") %>% 
+  clean_names() %>% 
+  mutate(date_new = ymd(date))
+```
+```{r}
+fatal_police_shootings_agencies <- read_csv("fatal-police-shootings-agencies.csv") %>% 
+  clean_names()
+```
+```{r}
+# Men and woman shot by police since 2015 to sep 4 2020 who had mental illnesses.
+
+fatal_police_shootings_data %>% 
+  filter(
+    date_new < "2020-09-03"
+  ) %>% 
+  filter(
+    str_detect(gender, "male")|
+    str_detect(gender, "female")) %>% 
+group_by(gender) %>%
+summarise(count = n())
+
+```
+gender == "F" | gender == "female",
+    was_mental_illness_related == TRUE
+  ) %>%
+  summarise(total_women_shot_with_mental_illness = n())
