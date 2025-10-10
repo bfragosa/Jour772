@@ -21,25 +21,55 @@ fatal_police_shootings_data <- read_csv("fatal-police-shootings-data.csv") %>%
   clean_names() %>% 
   mutate(date_new = ymd(date))
 ```
-```{r}
-fatal_police_shootings_agencies <- read_csv("fatal-police-shootings-agencies.csv") %>% 
-  clean_names()
-```
-```{r}
-# Men and woman shot by police since 2015 to sep 4 2020 who had mental illnesses.
 
-fatal_police_shootings_data %>% 
-  filter(
-    date_new < "2020-09-03"
-  ) %>% 
+```{r}
+# Q2. Number of fatal police shootings by gender since 2015 to 09/04/2020 (publication of the article.
+
+shootings_by_gender <- fatal_police_shootings_data %>% 
+  filter(date_new < "2020-09-04") %>% 
   filter(
     str_detect(gender, "male")|
-    str_detect(gender, "female")) %>% 
+    str_detect(gender, "female")
+)%>% 
+group_by(gender) %>%
+summarise(count = n())
+```
+
+```{r}
+# Q2. Men and woman shot by police since 2015 who had mental illnesses.
+
+Mental_illness_related_by_gender <- fatal_police_shootings_data %>% 
+  filter(date_new < "2020-09-04") %>% 
+  filter((str_detect(gender, "male")|str_detect(gender, "female"))&
+  str_detect(was_mental_illness_related, "TRUE"))%>% 
 group_by(gender) %>%
 summarise(count = n())
 
 ```
-gender == "F" | gender == "female",
-    was_mental_illness_related == TRUE
-  ) %>%
-  summarise(total_women_shot_with_mental_illness = n())
+
+```{r}
+# Q2. Percentage of men and woman shot by police since 2015 who had mental illnesses.
+
+total_women_shot <- fatal_police_shootings_data %>% 
+    filter(date_new < "2020-09-04") %>% 
+    filter(str_detect(gender, "female")) %>% 
+  group_by(gender) %>%
+  summarise(total = n())
+
+women_with_mental_illness <- fatal_police_shootings_data %>% 
+    filter(date_new < "2020-09-04") %>% 
+    filter(
+      str_detect(gender, "female"),
+      str_detect(was_mental_illness_related, "TRUE"))%>% 
+    group_by(gender) %>% 
+    summarise(total = n ())
+
+#I was having so much trouble grabbing the total from the two data sets and could not figure it out, I tried using chatgpt to explain whats wrong with my code but nothing would give me the values I needed.
+
+total_women_shot <- 248
+women_with_mental_illness <- 83
+Pct_with_mental_illness <- (women_with_mental_illness / total_women_shot) * 100
+
+```
+
+
