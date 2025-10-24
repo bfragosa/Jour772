@@ -5,6 +5,8 @@ date: "2025-10-08"
 output: html_document
 ---
 
+###This R file will include a database that examines the rate of police shootings by both race and gender in America. The orginal database that this file in built on is from a Washington Post data that led to a 2020 article. We worked to recreate the same information in the article built off the same data. 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
