@@ -1,6 +1,6 @@
 ---
-title: "Brandyn's Data Notebook"
-author: "Brandyn Fragosa"
+title: "Data Notebook"
+author: "Brandyn Fragosa, AKira Kyles and Nicole Ramos"
 date: "2025-10-08"
 output: html_document
 ---
