@@ -93,10 +93,6 @@ You'll need your Census API Key:
 
 **Task** set your API Key if you haven't already. You won't need to install or overwrite it.
 
-```{r echo=FALSE}
-census_api_key("CENSUS_API_KEY")
-```
-
 ## Load and view ACS variables
 
 You'll also need to load the list of American Community Survey variables from the 2023 5-year estimates so you can identify the codes you need:
@@ -105,61 +101,72 @@ You'll also need to load the list of American Community Survey variables from th
 
 ```{r}
 ACS23 <- load_variables(2023, "acs5", cache = TRUE)
-  
 ```
-
-```{r}
-md <- get_acs(geography = 'county',
-              variables = c(medage = 'B01002_001'),
-              state = 'MD',
-              year = 2023)
-```
-
 
 ## Answer questions
 
 **Q1** What is the Maryland jurisdiction with the lowest median age, according to the ACS 2023 5-year estimates? Hint: look at the variables for ACS in 2023 and find the variable for median age. **A1**
 
 ```{r}
-
+md <- get_acs(geography = "county",
+              variables = c(medage = "B01002_001"),
+              state = 'MD',
+              year = 2023)
 ```
 
-**Q2** Which Maryland counties have a median age of at least 50? You can use the dataframe created in Q1 to answer this, but you must write code to display only those counties with a median age of at least 50. **A2**
+**Q2** Which Maryland counties have a median age of at least 50? You can use the dataframe created in Q1 to answer this, but you must write code to display only those counties with a median age of at least 50. **Talbot County and Worcester County**
 
 ```{r}
+md %>% 
+ filter(estimate >= 50)
 ```
 
 **Q3** We're interested in knowing more about Montgomery County zip codes where overdose calls are coming from and the demographic characteristics they possess. In particular, we want to calculate a rate of calls per 1,000 population. To do this, you'll need to:
 
 1.  Load the Montgomery County 911 overdose calls data.
 ```{r}
-
+montgomery_2022_overdoses <- read_csv("data/montgomery_2022_overdoses.csv") %>% 
+mutate(zip = as.character(zip))
 ```
 
 2.  Create a new dataframe with the total number of calls for each zip code.
 ```{r}
-
+total_calls <- montgomery_2022_overdoses %>% 
+  group_by(zip) %>% 
+  summarise(total_calls=n()) %>% 
+  arrange(desc(total_calls))
 ```
 
 3.  Find the ACS variable pertaining to the total 18 and up population (there are several choices here; you want the simplest one). Then get from the ACS data from all Maryland zip codes using that variable - you will need to specify an earlier year to get the data.
-```{r}
 
+```{r}
+md18 <- get_acs(geography = 'zcta',
+              variables = c(pop18 = 'B09021_001'),
+              year = 2022) %>% 
+  mutate(GEOID = as.character(GEOID))
 ```
+
 
 4.  Join the ACS data to the Montgomery County zip code totals dataframe and rename the estimate column to a meaningful name you've given the ACS variable.
 ```{r}
-
+Montgomery_with_acs <- montgomery_2022_overdoses %>% 
+left_join(md18, by = c('zip'='GEOID'))
 ```
+
 
 5.  Add a column to the joined dataframe that calculates a rate of calls per 1,000 population.
 ```{r}
-
+Montgomery_with_acs %>% 
+  group_by(zip, estimate) %>% 
+  summarise(total_calls=n()) %>% 
+  mutate(pct_calls = (total_calls/estimate)* 1000) %>% 
+  arrange(desc(pct_calls))
 ```
 
 
 Which zip code has the highest rate of calls? Which has the lowest?
 
-**A3**
+**20889 had the highest rate of calls and 20707 had the lowest.**
 
 ```{r}
 ```
@@ -168,5 +175,4 @@ Which zip code has the highest rate of calls? Which has the lowest?
 
 **A4**
 
-**Write your answer here:**
-
+**Write your answer here: There could be a story with the 20707 zip code. Not really 20889 because the population is so little already, the calls per 1000 people skews the percentage to be way higher than the others because of how small the population is. For the 20707 zip code, I saw that 12% of the population are moving into units since 2021, a 16% decrease since 2018-2020 which was at 28%.I could look into why there has been such a drop, whats stopping people from moving, and so on.
