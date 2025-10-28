@@ -1,0 +1,8 @@
+"0","library(rvest)"
+"0",""
+"0","# Read the HTML"
+"0","crime_data <- read_html(""https://umpd.umd.edu/statistics-reports/daily-crime-and-incident-logs/2025/10"")"
+"0",""
+"0","tables <- crime_data %>% html_table()"
+"0",""
+"0","df <- tables[[1]]"

@@ -89,29 +89,114 @@ print(colnames(df))
 # Show structure
 print(str(df))
 ```
+
 ```{r}
-library(rvest)
-library(dplyr)
-library(tidyr)
+crime_df_clean %>% 
+  group_by(`Crime Type`) %>% 
+  summarise(crime = n()) %>% 
+  arrange(desc(crime))
+```
 
-# Read the data
-crime_data <- read_html("https://umpd.umd.edu/statistics-reports/daily-crime-and-incident-logs/2025/10")
-tables <- crime_data %>% html_table()
-df <- tables[[1]]
+```{r}
+crime_data_2024 <- read_html("https://umpd.umd.edu/statistics-reports/daily-crime-and-incident-logs/2024/10")
 
-# Identify location rows (where UMPD Case Number equals Date Occurred)
-# This indicates the location is repeated across all columns
-df <- df %>%
-  mutate(
-    # Extract location when the case number column equals the date occurred column
-    location = ifelse(`UMPD Case Number` == `Date Occurred`, `UMPD Case Number`)
-  ) %>%
-  # Fill location down to subsequent rows
-  fill(location, .direction = "down") %>%
-  # Remove the location rows (where case number equals date occurred)
-  filter(`UMPD Case Number` != `Date Occurred`)
+tables_2024 <- crime_data_2024 %>% html_table()
 
-# View the result
-head(df, 20)
+data_frame_2024 <- tables_2024[[1]]
+```
+
+```{r}
+colnames(data_frame_2024)[colnames(data_frame_2024) == ""] <- paste0("col_", seq_along(colnames(data_frame_2024)[colnames(data_frame_2024) == ""]))
+
+# Add row numbers to track pairs
+data_frame_2024 <- data_frame_2024 %>%
+  mutate(row_num = row_number())
+
+# Separate into crime data rows (odd rows) and address rows (even rows)
+crime_rows_2024 <- data_frame_2024 %>%
+  filter(row_num %% 2 == 1)
+
+address_rows_2024 <- data_frame_2024 %>%
+  filter(row_num %% 2 == 0) %>%
+  # Extract address from the second column (Date Occurred column in address rows)
+  select(address = 2)
+
+# Combine crime data with addresses
+crime_df_clean_2024 <- crime_rows_2024 %>%
+  select(-row_num) %>%
+  bind_cols(address_rows_2024) %>%
+  # Clean up the address column
+  mutate(address = trimws(address))
+
+# View the cleaned data
+head(crime_df_clean_2024, 20)
+
+# Optional: Save to CSV
+write.csv(crime_df_clean_2024, "crime_data_clean_2024.csv", row.names = FALSE)
+
+# Summary of the data
+cat("Total incidents:", nrow(crime_df_clean_2024), "\n")
+cat("\nFirst few entries with addresses:\n")
+crime_df_clean_2024 %>%
+  select(`UMPD Case Number`, `Date Occurred`, `Crime Type`, Disposition, address) %>%
+  head(10) %>%
+  print()
+
+# Crime type summary
+cat("\nCrime types:\n")
+table(crime_df_clean_2024$`Crime Type`)
+```
+
+```{r}
+crime_df_clean_2024 %>% 
+  group_by(`Crime Type`) %>% 
+  summarise(crime = n()) %>% 
+  arrange(desc(crime))
+```
+```{r}
+crime_data_2023 <- read_html("https://umpd.umd.edu/statistics-reports/daily-crime-and-incident-logs/2023/10")
+
+tables_2023 <- crime_data_2023 %>% html_table()
+
+data_frame_2023 <- tables_2023[[1]]
+```
+
+```{r}
+colnames(data_frame_2023)[colnames(data_frame_2023) == ""] <- paste0("col_", seq_along(colnames(data_frame_2023)[colnames(data_frame_2023) == ""]))
+
+data_frame_2023 <- data_frame_2023 %>%
+  mutate(row_num = row_number())
+
+crime_rows_2023 <- data_frame_2023 %>%
+  filter(row_num %% 2 == 1)
+
+address_rows_2023 <- data_frame_2023 %>%
+  filter(row_num %% 2 == 0) %>%
+  select(address = 2)
+
+crime_df_clean_2023 <- crime_rows_2023 %>%
+  select(-row_num) %>%
+  bind_cols(address_rows_2023) %>%
+  mutate(address = trimws(address))
+
+head(crime_df_clean_2023, 20)
+
+write.csv(crime_df_clean_2023, "crime_data_clean_2023.csv", row.names = FALSE)
+
+cat("Total incidents:", nrow(crime_df_clean_2023), "\n")
+cat("\nFirst few entries with addresses:\n")
+crime_df_clean_2023 %>%
+  select(`UMPD Case Number`, `Date Occurred`, `Crime Type`, Disposition, address) %>%
+  head(10) %>%
+  print()
+
+cat("\nCrime types:\n")
+table(crime_df_clean_2023$`Crime Type`)
+```
+```{r}
+crime_df_clean_2023 %>% 
+  group_by(`Crime Type`) %>% 
+  summarise(crime = n()) %>% 
+  arrange(desc(crime))
 ```
 
