@@ -5,7 +5,7 @@ date: "2025-10-08"
 output: html_document
 ---
 
-###This R file will include a database that examines the rate of police shootings by both race and gender in America. The orginal database that this file in built on is from a Washington Post data that led to a 2020 article. We worked to recreate the same information in the article built off the same data. 
+###This R file will include a database that examines the rate of police shootings by both race and gender in America. The orginal database that this file in built on is from a Washington Post data that led to a 2020 article. We worked to recreate the same information in the article built off the same data.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -23,8 +23,8 @@ fatal_police_shootings_data <- read_csv("fatal-police-shootings-data.csv") %>%
   clean_names() %>% 
   mutate(date_new = ymd(date))
 ```
-**Brandyn**
-#For question 2, the article provides a data set totaling the number of Women and Men who have been fatally shot by police and had mental illness. They dont include people who identify as non-binary in this data set and they dont explain why, and the 20 people who's gender is N/A are those whos gender was missing in the police report. What I first did to filter my data was create a table that collected only the number of male and females shot by police since 2015, when the data set first starts, to september 4th, 2020, which is the day when the article was published. Since we are writing code to show how the authors got the numbers that they did, we had to base our code on when the article was published because the data set has dates now all the way to December 31st, 2024, and our numbers would be alot higher than what they were finding.
+
+**Brandyn** #For question 2, the article provides a data set totaling the number of Women and Men who have been fatally shot by police and had mental illness. They dont include people who identify as non-binary in this data set and they dont explain why, and the 20 people who's gender is N/A are those whos gender was missing in the police report. What I first did to filter my data was create a table that collected only the number of male and females shot by police since 2015, when the data set first starts, to september 4th, 2020, which is the day when the article was published. Since we are writing code to show how the authors got the numbers that they did, we had to base our code on when the article was published because the data set has dates now all the way to December 31st, 2024, and our numbers would be alot higher than what they were finding.
 
 ```{r}
 # Q2. Number of fatal police shootings by gender since 2015 to 09/04/2020 (publication of the article.
@@ -54,48 +54,29 @@ summarise(count = n())
 ```{r}
 # Q2. Percentage of men and woman shot by police since 2015 who had mental illnesses.
 
-total_women_shot <- fatal_police_shootings_data %>% 
-    filter(date_new < "2020-09-04") %>% 
-    filter(str_detect(gender, "female")) %>% 
-  group_by(gender) %>%
-  summarise(total_women_shot = n())
-
-women_with_mental_illness <- fatal_police_shootings_data %>% 
-    filter(date_new < "2020-09-04") %>% 
-    filter(
-      str_detect(gender, "female"),
-      str_detect(was_mental_illness_related, "TRUE"))%>% 
-    group_by(gender) %>% 
-    summarise(women_with_mental_illness = n ())
-
-combined_total <- left_join(total_women_shot, women_with_mental_illness, by = "gender")
-  
-combined_total %>% 
-  mutate(Pct_with_mental_illness = (women_with_mental_illness / total_women_shot) * 100)
+fatal_police_shootings_data |> 
+  filter(date_new < "2020-09-04", 
+         str_detect(gender, "female"))|> 
+  summarise(
+    total_women_shot = n(),
+    women_with_mental_illness = sum(was_mental_illness_related == TRUE, na.rm = TRUE),
+    pct_with_mental_illness = (women_with_mental_illness / total_women_shot) * 100
+  )
 ```
 
 ```{r}
-total_men_shot <- fatal_police_shootings_data %>% 
-    filter(date_new < "2020-09-04") %>% 
-    filter(str_detect(gender, "male")) %>% 
-  group_by(gender) %>%
-  summarise(total_men_shot = n())
-
-men_with_mental_illness <- fatal_police_shootings_data %>% 
-    filter(date_new < "2020-09-04") %>% 
-    filter(
-      str_detect(gender, "male"),
-      str_detect(was_mental_illness_related, "TRUE"))%>% 
-    group_by(gender) %>% 
-    summarise(men_with_mental_illness = n ())
-
-combined_total <- left_join(total_men_shot, men_with_mental_illness, by = "gender")
-  
-combined_total %>% 
-  mutate(Pct_with_mental_illness = (men_with_mental_illness / total_men_shot) * 100)
+fatal_police_shootings_data |> 
+  filter(date_new < "2020-09-04", 
+         str_detect(gender, "male"))|> 
+  summarise(
+    total_men_shot = n(),
+    men_with_mental_illness = sum(was_mental_illness_related == TRUE, na.rm = TRUE),
+    pct_with_mental_illness = (men_with_mental_illness / total_men_shot) * 100
+  )
 ```
 
 **Akira**
+
 ```{r}
 #By race, 147 of the women killed were White, 48 Black and 29 Hispanic. Five were Native American, four were Asian and three were other races.
 
@@ -106,9 +87,9 @@ fatal_police_shootings_data |>
   summarise(count=n()) 
 ```
 
-##By percentages, men shot by police were less often White and more often Black or Hispanic. 
+##By percentages, men shot by police were less often White and more often Black or Hispanic.
 
-##My data shows this statement as false and it was actually the complete opposite and white men are actually shot more than than Black men by percentage.  
+##My data shows this statement as false and it was actually the complete opposite and white men are actually shot more than than Black men by percentage.
 
 ```{r}
 fatal_police_shootings_data |> 
@@ -145,8 +126,7 @@ deaths |>
 
 ###The data, although very slightly higher in percentage by minimal margins, those armed with guns is the highests for both genders. In the Washington Post data, 109 women were reported to be armed with a gun but I found 105 and my percentage increased by 4% compared to Washington Post results. The margins for the male data was much closer with 59% compared to the Washington Post's 57%
 
-**Nicole**
-### For 5A, I took the dataset and filtered for two factors: dates before Sept. 3, 2020 and female in the gender column. I grouped the newly filtered data by the column "armed_with," in order to see the counts of females by what weapons they were (or weren't) carrying when killed by police.
+**Nicole** \### For 5A, I took the dataset and filtered for two factors: dates before Sept. 3, 2020 and female in the gender column. I grouped the newly filtered data by the column "armed_with," in order to see the counts of females by what weapons they were (or weren't) carrying when killed by police.
 
 ```{r}
 #5A. Since 2015, police have killed 26 unarmed women, including Taylor.
@@ -157,7 +137,7 @@ fatal_police_shootings_data |>
   summarise(count = n())
 ```
 
-### For 5B, I retained the two previous filters but added one more: unarmed in the "armed_with" column. I then grouped by race and summarized, so I could see the counts of unarmed women by race. 
+### For 5B, I retained the two previous filters but added one more: unarmed in the "armed_with" column. I then grouped by race and summarized, so I could see the counts of unarmed women by race.
 
 ### 5C's statement doesn't specify whether the Black and White women they are referring to are armed or unarmed. I ran code below, removing the unarmed column filter and grouping by race, to see if that data came from women generally. It did not appear so, as White women fatally shot by police would otherwise be about three times as many as Black women. 5C does appear true when referring to the unarmed female counts by race.
 
@@ -186,4 +166,4 @@ fatal_police_shootings_data |>
 
 # 5D. White women account for five times the Black female population.
 
-### Given that The Washington Post's GitHub does not contain any csv files for total U.S. population, the statistic could come from 2010 census data (https://www.census.gov/library/visualizations/interactive/race-and-ethnicity-in-the-united-state-2010-and-2020-census.html). In 2010, the population identifying as White alone was 61.6%, which is five times more than the population identifying as Black, 12.4%. These numbers, though, are not filtered out for specific gender.  
+### Given that The Washington Post's GitHub does not contain any csv files for total U.S. population, the statistic could come from 2010 census data (<https://www.census.gov/library/visualizations/interactive/race-and-ethnicity-in-the-united-state-2010-and-2020-census.html>). In 2010, the population identifying as White alone was 61.6%, which is five times more than the population identifying as Black, 12.4%. These numbers, though, are not filtered out for specific gender.

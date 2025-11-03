@@ -35,7 +35,6 @@ You will need to create columns for the date, week and month based on the existi
 
 ```{r}
 Prince_georges_2022_overdoses <- read_csv("data/prince_georges_2022_overdoses.csv") %>% 
-  clean_names() %>% 
   mutate(datetime = ymd_hms(datetime),
          date = date(datetime),
          week = week(datetime),
