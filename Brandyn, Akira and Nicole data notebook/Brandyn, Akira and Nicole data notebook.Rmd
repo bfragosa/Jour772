@@ -81,7 +81,7 @@ group_by(gender) %>%
 summarise(count = n())
 ```
 
-#When calculating the percentage of men and women fatally shot by police and had mental illness, we found that women had a higher percentage with 33% and men with 23%. I'm assuming the reason why women who are fatally shot by police and have a mental illness have a higher percentage than men is because as mentioned in the previous comment, police oftenly view women to be "less violent," so when they deconstruct that belief, the likliehood of police reacting with force is higher, resulting in a higher fatalility rate.
+#When calculating the percentage of men and women fatally shot by police and had mental illness, we found that women had a higher percentage with 33% and men with 23%. I'm assuming the reason why women who are fatally shot by police and have a mental illness have a higher percentage than men is because as mentioned in the previous comment, police oftenly view women to be "less violent," so when they deconstruct that belief, the likliehood of police reacting with force is higher, resulting in a higher fatality rate.
 
 ```{r}
 # Q2. Percentage of men and woman shot by police since 2015 who had mental illnesses.
@@ -198,7 +198,7 @@ fatal_police_shootings_data |>
   mutate(pct_men = (n / sum(n)) * 100)
 ```
 
-#rsw comment:your results don't consider the binary nature of the statement: "By percentages, men shot by police were less often White and more often Black or Hispanic." If we calculated white as a binary variable, more people of color (53%) are shot. 
+**The Washington Post article was specific when it said "By percentages, men shot by police were less often White and more often Black or Hispanic." My previous code found this to not be true, but if it were presented more generally, non-white shootings combined would be higher than white shooting.**
 ```{r}
 fatal_police_shootings_data |> 
   filter(date < "2020-09-03", gender == "male")  |> 
@@ -220,8 +220,9 @@ armed_shootings <- fatal_police_shootings_data |> filter(date > "2020-09-03" &
            gender== "male" ) |>
   group_by(gender, armed_with) |> 
   summarise(count = n()) |> 
-  mutate(percentage = round((count / sum(count)) * 100,2)) 
+  mutate(percentage = round((count / sum(count)) * 100,2))
 ```
+**Here I simplified the data even more to make a more appealing graph. I took the top weapon results, which were a gun, blunt object or a knife.  **
 
 ```{r}
 armed_shootingsg <- armed_shootings |> 
@@ -232,16 +233,17 @@ armed_shootingsg <- armed_shootings |>
   group_by(gender, percentage) |> 
   arrange(desc(percentage))
 ```
-
+**So now my graphic is much cleaner than it would be if I had like 20+ categories for weapons people were armed with when they were shot by police.**
 ```{r}
  armed_shootingsg |> 
-   ggplot() + 
-  geom_line(aes(x = armed_with, y = percentage, color = gender)) +
+ ggplot(aes(x = armed_with, y = percentage, fill = gender)) +
+  geom_col(position = "dodge") +
   labs(
-    title="Armed Police Shooting by Gender",
-    x = "Weapon",
-    y = "Gender",
-    caption = "source: The Washington Post. Graphic by Akira Kyles. 10/27/2025")
+    title= "Percentage of Police Shottings by Gender",
+    y = "Percentage",
+    x = "Gender",
+    caption = "source: The Washington Post. Graphic by Akira Kyles. 11/1/2025"
+     )
 ```
 
 ```{r}
