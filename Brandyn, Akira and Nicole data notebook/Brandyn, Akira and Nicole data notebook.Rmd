@@ -148,7 +148,7 @@ race_combined_total <- fatal_police_shootings_data %>%
             with_mental_illness = sum(was_mental_illness_related == TRUE),
             pct_with_mental_illness = round((with_mental_illness/ total_shot) * 100, 1)
             )%>% 
-  arrange(gender, desc(total_shot))
+  arrange(gender, desc(pct_with_mental_illness))
 ```
 #This ggplot helps visualize how women across all races have a higher percentage of the total shot and with a mental illness than men. I want to also note that the Native American percentage for women is an outlier in this data frame because only 3 out of the 5 women fatally shot had a mental illness, so it makes the percentage way higher. The same thing applies for the "other" data frame. 1 out of the 2 women who were fatally shot classified as "other" had a mental illness and it makes the percentage higher.
 
