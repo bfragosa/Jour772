@@ -1,11 +1,15 @@
 ---
-title: "Data Notebook"
-author: "Brandyn Fragosa, AKira Kyles and Nicole Ramos"
-date: "2025-10-08"
+title: "reverse_engineering_project_final_project_submission"
+author: "Brandyn Fragosa, Akira Kyles and Nicole Ramos"
+date: "2025-11-04"
 output: html_document
 ---
 
 ###This R file will include a database that examines the rate of police shootings by both race and gender in America. The orginal database that this file in built on is from a Washington Post data that led to a 2020 article. We worked to recreate the same information in the article built off the same data.
+
+###All three of us contributed to lines 8 through 44 at various points throughout this project, as we received feedback on how to set up the R project file and how to best present the data. 
+
+###From there, we each took a collection of stats that originally caught our attention from the and ran them as codes, checking in with each other as needed. 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -21,6 +25,8 @@ library(lubridate)
 library(ggplot2)
 library(ggrepel)
 library(tidycensus)
+library(ggthemes)
+
 ```
 
 ```{r}
@@ -199,6 +205,7 @@ fatal_police_shootings_data |>
 ```
 
 **The Washington Post article was specific when it said "By percentages, men shot by police were less often White and more often Black or Hispanic." My previous code found this to not be true, but if it were presented more generally, non-white shootings combined would be higher than white shooting.**
+
 ```{r}
 fatal_police_shootings_data |> 
   filter(date < "2020-09-03", gender == "male")  |> 
@@ -210,7 +217,6 @@ fatal_police_shootings_data |>
   mutate(pct_men = (n / sum(n)) * 100)
   
 ```
-
 
 ### For both genders, a gun was the most common weapon. Of men killed, 57 percent were armed with a gun and of women, 44 percent.
 
@@ -233,7 +239,9 @@ armed_shootingsg <- armed_shootings |>
   group_by(gender, percentage) |> 
   arrange(desc(percentage))
 ```
+
 **So now my graphic is much cleaner than it would be if I had like 20+ categories for weapons people were armed with when they were shot by police.**
+
 ```{r}
  armed_shootingsg |> 
  ggplot(aes(x = armed_with, y = percentage, fill = gender)) +
@@ -270,15 +278,17 @@ fatal_shootings_unarmed_women <- fatal_police_shootings_data |>
   filter(date_new < "2020-09-03" & 
            gender== "female") |>
   group_by(armed_with) |>
-  summarise(count = n(), NA.RM=TRUE) |>
+  summarise(count = n()) |>
   arrange(desc(count))
 ```
 
 ###I decided this code would be the one I wanted a visual representation of, via a bar chart.
 
 ```{r}
-fatal_shootings_unarmed_women |> ggplot() + geom_bar(aes(x=reorder(armed_with,count), weight=count)) +coord_flip() +labs(title="Since 2015, police have killed 26 unarmed women",x = "type of weapon",y = "count",caption = "Source: The Washington Post. Graphic created by Nicole Ramos 11/03/2025") + theme_minimal()
+fatal_shootings_unarmed_women |> ggplot(aes(x = reorder(armed_with,count), y = count)) +
+  geom_bar(stat='identity',fill="#F8766D") + labs(title="Since 2015, police have killed 26 unarmed women",x = "Type of Weapon",y = "Count",caption = "Source: The Washington Post. Graphic created by Nicole Ramos 11/03/2025") + coord_flip()
 ```
+
 ### For 5B, I retained the two previous filters but added one more: unarmed in the "armed_with" column. I then grouped by race and summarized, so I could see the counts of unarmed women by race. 
 
 ### 5C's statement doesn't specify whether the Black and White women they are referring to are armed or unarmed. I ran code below, removing the unarmed column filter and grouping by race, to see if that data came from women generally. It did not appear so, as White women fatally shot by police would otherwise be about three times as many as Black women. 5C does appear true when referring to the unarmed female counts by race.
@@ -308,9 +318,9 @@ fatal_police_shootings_data |>
   arrange(desc(count))
 ```
 
-### Given that The Washington Post's GitHub does not contain any csv files for total U.S. population, 5D (below) could have come from 2010 data based on the date the article was published. I imported the 2010 Census data in to see, focusing on the following variables: Total!!Population of one race!!White alone (P008003); Total!!Population of one race!!Black or African American alone (P008004); and Total race (P008001). I changed the titles of the columns to clarify the information, setting them as race, population, and total population. Finally, I added a column to show the percentage of the population that identifies as white alone or Black alone. 
+### The Washington Post specifies their population data came from the 2018 American Community Survey Five-Year Estimates. I imported that data in to see, focusing on the following variables: Estimate total female, sex by age white alone (B01001A_017); estimate total female, sex by age Black or African American alone (B01001B_017); and estimate total female sex by age (B01001_026). I changed the titles of the columns to clarify the information, setting them as race, est_population, and est_total_population. Finally, I added a column to show the percentage of the population that identifies as white alone or Black/African American alone. 
 
-###The data shows that white women account for closer to six times the Black female population.
+###The data shows that white women account for closer to six times the Black female population, about 5.6 times.
 
 ```{r echo=FALSE}
 # 5D. White women account for five times the Black female population.
@@ -318,17 +328,21 @@ census_api_key("", install=FALSE)
 ```
 
 ```{r}
-sf1 <- load_variables(2010, "sf1", cache = TRUE)
+acs5 <- load_variables(2018, "acs5", cache = TRUE)
+View(acs5)
 ```
 
 ```{r}
-p10 <- get_decennial(geography = "us",variables = c("P008003", "P008004"),
-summary_var = "P008001", year = 2010) |>
-select(variable, value, summary_value) |>
-rename(population=value) |>
-rename(total_population=summary_value) |>
+female_pop_black_white <- get_acs(geography = "us",variables = c("B01001A_017", "B01001B_017"),
+summary_var = "B01001_026", year = 2018) |>
+  select(variable, estimate, moe, summary_est, summary_moe) |>
+rename(est_population=estimate) |>
+rename(est_total_population=summary_est) |>
 rename(race=variable) |>
-  mutate(race = case_when(str_detect(race, "P008003") ~ "White alone", str_detect(race, "P008004") ~ "Black alone")) |>
-  mutate(pct_population = (population/total_population)*100)
-View(p10)
+  rename(est_total_moe=summary_moe)
+```
+```{r}
+female_pop_black_white |>
+  mutate(race = case_when(str_detect(race, "B01001A_017") ~ "white alone", str_detect(race, "B01001B_017") ~ "black/african american alone")) |>
+  mutate(pct_population = (est_population/est_total_population)*100)
 ```
