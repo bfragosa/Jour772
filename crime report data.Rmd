@@ -16,17 +16,218 @@ library(janitor)
 library(lubridate)
 library(rvest)
 ```
-
 ```{r}
 library(rvest)
 
 # Read the HTML
-crime_data <- read_html("https://umpd.umd.edu/statistics-reports/daily-crime-and-incident-logs/2025/10")
+crime_data <- read_html("https://umpd.umd.edu/statistics-reports/uniform-crime-reports")
+```
 
+#PERSONS CRIME DATA AND PERCENT CHANGE
+
+```{r}
 tables <- crime_data %>% html_table()
 
-df <- tables[[1]]
+Persons_crime_2025 <- tables[[1]] %>% 
+  clean_names() %>% 
+  mutate(year=2025)
 ```
+```{r}
+Persons_crime_2025 <- Persons_crime_2025 %>% rename(crime_type = x2025)
+```
+
+
+```{r}
+tables <- crime_data %>% html_table()
+
+Persons_crime_2024 <- tables[[4]] %>% 
+clean_names() %>% 
+  mutate(year=2024)
+Persons_crime_2024 <- Persons_crime_2024 %>% rename(crime_type = x2024)
+```
+
+
+```{r}
+tables <- crime_data %>% html_table()
+
+Persons_crime_2023 <- tables[[7]] %>% 
+  clean_names() %>% 
+  mutate(year=2023)
+Persons_crime_2023 <- Persons_crime_2023 %>% rename(crime_type = x2023)
+```
+
+
+```{r}
+Persons_crime_2023 <- Persons_crime_2023 %>% mutate(year = 2023)
+Persons_crime_2024 <- Persons_crime_2024 %>% mutate(year = 2024)
+Persons_crime_2025 <- Persons_crime_2025 %>% mutate(year = 2025)
+
+Persons_crime_data_all <- bind_rows(Persons_crime_2023, Persons_crime_2024, Persons_crime_2025)
+```
+
+
+```{r}
+Persons_crime_change <- Persons_crime_data_all %>%
+  select(crime_type, year, total) %>%
+  filter(!is.na(total)) %>%
+  arrange(crime_type, year) %>%
+  group_by(crime_type) %>%
+  mutate(
+    percent_change = ((total - lag(total)) / lag(total)) * 100,
+    change_from_2023 = ((total - first(total)) / first(total)) * 100
+  )
+```
+
+```{r}
+Persons_crime_summary <- Persons_crime_data_all %>%
+  select(crime_type, year, total) %>%
+  filter(!is.na(total)) %>%
+  pivot_wider(names_from = year, values_from = total, names_prefix = "year_") %>%
+  mutate(
+    change_2023_to_2024 = ((year_2024 - year_2023) / year_2023) * 100,
+    change_2024_to_2025 = ((year_2025 - year_2024) / year_2024) * 100,
+    change_2023_to_2025 = ((year_2025 - year_2023) / year_2023) * 100
+  )
+```
+
+
+#PROPERTY CRIME DATA AND PERCENT CHANGE
+
+```{r}
+tables <- crime_data %>% html_table()
+
+Property_crime_2025 <- tables[[2]] %>% 
+clean_names() %>% 
+  mutate(year=2025)
+Property_crime_2025 <- Property_crime_2025 %>% rename(crime_type = x2025)
+```
+
+
+```{r}
+tables <- crime_data %>% html_table()
+
+Property_crime_2024 <- tables[[5]] %>% 
+clean_names() %>% 
+  mutate(year=2024)
+Property_crime_2024 <- Property_crime_2024 %>% rename(crime_type = x2024)
+```
+
+
+```{r}
+tables <- crime_data %>% html_table()
+
+Property_crime_2023 <- tables[[8]] %>% 
+clean_names() %>% 
+  mutate(year=2023)
+Property_crime_2023 <- Property_crime_2023 %>% rename(crime_type = x2023)
+```
+
+
+```{r}
+Property_crime_2023 <- Property_crime_2023 %>% mutate(year = 2023)
+Property_crime_2024 <- Property_crime_2024 %>% mutate(year = 2024)
+Property_crime_2025 <- Property_crime_2025 %>% mutate(year = 2025)
+
+Property_crime_data_all <- bind_rows(Property_crime_2023, Property_crime_2024, Property_crime_2025)
+```
+
+
+```{r}
+Property_crime_change <- Property_crime_data_all %>%
+  select(crime_type, year, total) %>%
+  filter(!is.na(total)) %>%
+  arrange(crime_type, year) %>%
+  group_by(crime_type) %>%
+  mutate(
+    percent_change = ((total - lag(total)) / lag(total)) * 100,
+    change_from_2023 = ((total - first(total)) / first(total)) * 100
+  )
+```
+
+
+```{r}
+Property_crime_summary <- Property_crime_data_all %>%
+  select(crime_type, year, total) %>%
+  filter(!is.na(total)) %>%
+  pivot_wider(names_from = year, values_from = total, names_prefix = "year_") %>%
+  mutate(
+    change_2023_to_2024 = ((year_2024 - year_2023) / year_2023) * 100,
+    change_2024_to_2025 = ((year_2025 - year_2024) / year_2024) * 100,
+    change_2023_to_2025 = ((year_2025 - year_2023) / year_2023) * 100
+  )
+```
+
+
+#SOCIETY CRIME DATA AND PERCENT CHANGE
+
+
+```{r}
+tables <- crime_data %>% html_table()
+
+Society_crime_2025 <- tables[[3]] %>% 
+clean_names() %>% 
+  mutate(year=2025)
+Society_crime_2025 <- Society_crime_2025 %>% rename(crime_type = x2025)
+```
+
+
+```{r}
+tables <- crime_data %>% html_table()
+
+Society_crime_2024 <- tables[[6]] %>% 
+clean_names() %>% 
+  mutate(year=2024)
+Society_crime_2024 <- Society_crime_2024 %>% rename(crime_type = x2024)
+```
+
+
+```{r}
+tables <- crime_data %>% html_table()
+
+Society_crime_2023 <- tables[[9]] %>% 
+clean_names() %>% 
+  mutate(year=2023)
+Society_crime_2023 <- Society_crime_2023 %>% rename(crime_type = x2023)
+```
+
+
+```{r}
+Society_crime_2023 <- Society_crime_2023 %>% mutate(year = 2023)
+Society_crime_2024 <- Society_crime_2024 %>% mutate(year = 2024)
+Society_crime_2025 <- Society_crime_2025 %>% mutate(year = 2025)
+
+Society_crime_data_all <- bind_rows(Society_crime_2023, Society_crime_2024, Society_crime_2025)
+```
+
+
+```{r}
+Society_crime_change <- Society_crime_data_all %>%
+  select(crime_type, year, total) %>%
+  filter(!is.na(total)) %>%
+  arrange(crime_type, year) %>%
+  group_by(crime_type) %>%
+  mutate(
+    percent_change = ((total - lag(total)) / lag(total)) * 100,
+    change_from_2023 = ((total - first(total)) / first(total)) * 100
+  )
+```
+
+
+```{r}
+Property_crime_summary <- Property_crime_data_all %>%
+  select(crime_type, year, total) %>%
+  filter(!is.na(total)) %>%
+  pivot_wider(names_from = year, values_from = total, names_prefix = "year_") %>%
+  mutate(
+    change_2023_to_2024 = ((year_2024 - year_2023) / year_2023) * 100,
+    change_2024_to_2025 = ((year_2025 - year_2024) / year_2024) * 100,
+    change_2023_to_2025 = ((year_2025 - year_2023) / year_2023) * 100
+  )
+```
+
+
+
+
 
 
 ```{r}

@@ -1,0 +1,23 @@
+"crime_type","jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec","x","total","year"
+"Drug/Narcotic Violations",5,9,3,1,2,2,2,NA,1,1,2,3,NA,31,2023
+"Drug Equipment Violations",NA,1,1,NA,NA,1,NA,NA,NA,NA,NA,NA,NA,3,2023
+"Pornography/Obscene Material",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Prostitution",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Assisting or Promoting Prostitution",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Purchasing Prostitution",NA,NA,NA,NA,1,NA,NA,NA,NA,NA,NA,NA,NA,1,2023
+"Weapon Law Violations",NA,2,NA,NA,1,NA,NA,NA,NA,NA,1,NA,NA,4,2023
+"Animal Cruelty",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Curfew/Loitering/Vagrancy Violations",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Disorderly Conduct",NA,NA,4,1,4,1,NA,NA,2,NA,1,1,NA,14,2023
+"Driving Under the Influence",5,13,8,7,11,7,11,10,3,9,7,6,NA,97,2023
+"Drunkeness",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Family Offenses, Nonviolent",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Liquor Law Violations",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Trespassing of Real Property",1,NA,1,2,NA,3,1,NA,1,2,1,1,NA,13,2023
+"Betting/Wagering",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Operating/Promoting/Assisting Gambling",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Gambling Equipment Violations",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Sports Tampering",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"All Other Offenses",NA,NA,3,2,4,1,1,1,NA,NA,NA,2,NA,14,2023
+"",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2023
+"Society Crimes - Total",11,25,20,13,23,15,15,11,7,12,12,13,NA,177,2023
