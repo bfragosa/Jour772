@@ -241,7 +241,7 @@ death_categories <- death_categories |>
          cause=="Typhoid Fever" ~ "typhoid",
          cause=="Typhoid fever" ~ "typhoid",
          cause=="Typhoid, Contributory Peritonitus" ~ "typhoid",
-         cause=="Primary typhoid fever immediate perforative bowel" ~ "typhoid",
+         cause=="Primary typhoid fever immediate perf" ~ "typhoid",
          cause=="Primary: Typhoid fever" ~ "typhoid",
         cause=="Typhoid, contributory Cardiac Trouble" ~ "typhoid",
         cause=="Encephalitis" ~ "encephalitis",
