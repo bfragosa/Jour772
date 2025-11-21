@@ -1,0 +1,72 @@
+---
+title: "Cheltenham Article Data Cleaning"
+author: "Brandyn Fragosa and Akira Kyles"
+date: "2025-11-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+options(scipen=999)
+install.packages("ggrepel")
+install.packages("ggplot2")
+library(tidyverse)
+library(janitor)
+library(lubridate)
+library(ggplot2)
+library(ggrepel)
+library(tidycensus)
+library(ggthemes)
+
+```
+
+```{r}
+Cheltenham_ex <- read_csv("C:/Users/frago/Downloads/Cheltenham Article Data Extraction (Responses) AK & BF - Form Responses 1 (2).csv") %>% clean_names()
+```
+
+```{r}
+Cheltenham_ex <- Cheltenham_ex %>% 
+  mutate(date_of_article = mdy(date_of_article))
+```
+
+```{r}
+Cheltenham_ex %>% 
+   group_by(newspaper_name) %>% 
+    summarize(count = n()) %>% 
+  arrange(desc(count))
+```
+
+```{r}
+Dated_Cheltenham_ex <- Cheltenham_ex %>% 
+   group_by(newspaper_name, date_of_article) %>% 
+    summarize(count = n()) %>% 
+  arrange(date_of_article)
+```
+```{r}
+article_type <- Cheltenham_ex %>% 
+   group_by(article_type) %>% 
+    summarize(count = n()) %>% 
+  arrange(article_type)
+```
+
+```{r}
+yearly_Cheltenham <- Cheltenham_ex %>% 
+  mutate(year = year(date_of_article)) %>% 
+  group_by(year) %>% 
+  summarise(count = n()) %>% 
+  arrange(count)
+```
+
+```{r}
+yearly_Cheltenham %>%
+  ggplot(aes(x = year, y = count)) +
+  geom_col(fill = "steelblue", position = "dodge") +
+  labs(x = "Year", 
+       y = "Total Number of Articles", 
+       title = "Cheltenham Articles Over Time",
+       caption = "Source: Library of Congress. Graphic by Brandyn Fragosa. 11-21-2025")
+  ggsave("Cheltenham_article_graph.png", device = "png", width = 9, height = 6, dpi = 800)
+```
