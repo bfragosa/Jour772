@@ -1,11 +1,13 @@
 ---
 title: "Bigrams for Cheltenham Research"
 author: "Rob Wells"
-date: '2025-11-24'
+date: '2025-11-25'
 output: html_document
 ---
 
 ##Completed by Akira Kyles and Brandyn Fragosa
+
+#Hey this is Brandyn, I did all of #3 because I didnt see your message until AKira had shared with me that it was in our inbox and not in the class announcements. We didnt notice it until it was time to submit.  
 
 # Jour 772 Fall 2025:
 
