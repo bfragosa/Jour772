@@ -5,6 +5,8 @@ date: '2025-11-24'
 output: html_document
 ---
 
+##Completed by Akira Kyles and Brandyn Fragosa
+
 # Jour 772 Fall 2025:
 
 In this exercise, you will import the Article Data Extraction results and create bigrams from the comments
@@ -135,14 +137,108 @@ Akira, Brandyn
 Nicole, Bex, Raphael
 Sophie, David, Zaka
 
-1) bigrams and word count on  "elaborate_on_the_quality_of_the_journalism_sourcing_graphics_photos_interviews"; "notes_on_neglect_or_abuse"; "notes_anything_else_thats_noteworthy"     
+1) bigrams and word count on  "elaborate_on_the_quality_of_the_journalism_sourcing_graphics_photos_interviews"; "notes_on_neglect_or_abuse"; "notes_anything_else_thats_noteworthy" 
+#This code renames the sections above so I can produce the bigrams and word count on each section. 
+```{r}
+news <- news |> 
+  rename(jquality = elaborate_on_the_quality_of_the_journalism_sourcing_graphics_photos_interviews, abuse = notes_on_neglect_or_abuse, noteworthy = notes_anything_else_thats_noteworthy)
+  
+```
+#This code produces the bigrams and word count on "elaborate_on_the_quality_of_the_journalism_sourcing_graphics_photos_interviews"
+```{r}
+journalism <- str_replace_all(news$jquality, "- ", "")
+journalism_df <- tibble(journalism,)
 
-2) add to the catgory code above -- be specific on what you are adding so I can merge it into the master code block
+journalism_tokenized <- journalism_df %>%
+  unnest_tokens(word,journalism)
+
+journalism_tokenized
+##This generated common words that were initially submitted into the "elaborate_on_the_quality_of_the_journalism_sourcing_graphics_photos_interviews" box on the Google form. 
+```
+```{r}
+bigrams2 <- journalism_df %>%
+  unnest_tokens(bigram2, journalism, token="ngrams", n=2) |> 
+  separate(bigram2, c("word1", "word2"), sep = " ")
+
+count_bigrams2 <- bigrams2 %>%
+  count(word1, word2, sort = TRUE)
+#This made a data set separating the top words into two columns.Then it created another data set counting the results so I could see the top used responses. 
+
+```
+##This code generate the bigrams and word count on "notes_on_neglect_or_abuse". 
+```{r}
+mistreatment <- str_replace_all(news$abuse, "- ", "")
+mistreatment_df <- tibble(mistreatment,)
+
+mistreatment_tokenized <- mistreatment_df %>%
+  unnest_tokens(word,mistreatment)
+
+mistreatment_tokenized
+
+##This produced a table of a lot of repeated words or "na" or didn't answer. It looks like a lot of people provided the same response when it came to allegations of abuse or neglect. 
+
+```
+```{r}
+bigrams3 <- mistreatment_df %>%
+  unnest_tokens(bigram3, mistreatment, token="ngrams", n=2) |> 
+  separate(bigram3, c("word1", "word2"), sep = " ")
+
+count_bigrams3 <- bigrams3 %>%
+  count(word1, word2, sort = TRUE)
+#This made a data set separating the results of the previous code into two columns.Then it created another data set counting the results so I could see the top used responses. 
+
+
+```
+##This code generate the bigrams and word count on ""notes_anything_else_thats_noteworthy".
+```{r}
+noteworthynews <- str_replace_all(news$noteworthy, "- ", "")
+noteworthynews_df <- tibble(noteworthynews,)
+
+noteworthynews_tokenized <- noteworthynews_df %>%
+  unnest_tokens(word,noteworthynews)
+
+noteworthynews_tokenized
+#This list seems to have the most diverse responses since it was more like a free response box in the Google form. 
+```
+```{r}
+bigram4 <- noteworthynews_df %>%
+  unnest_tokens(bigram4,noteworthynews, token="ngrams", n=2) |> 
+  separate(bigram4, c("word1", "word2"), sep = " ")
+
+count_bigram4 <- bigram4 %>%
+  count(word1, word2, sort = TRUE)
+#This made a data set separating the results of the previous code into two columns.Then it created another data set counting the results so I could see the top used responses. 
+
+```
+
+2) add to the category code above -- be specific on what you are adding so I can merge it into the master code block
+##Below are the words I would add to the catergory code. 
+```{r}
+news <- news |> 
+  mutate(details_clean = str_squish(str_remove_all(details, "[[:punct:]]"))) |> 
+  mutate(category = paste(
+    if_else(str_detect(details_clean, "(?i)convicted"), "origins", NA_character_),
+    if_else(str_detect(details_clean, "(?i)charged"), "origins", NA_character_),
+    if_else(str_detect(details_clean, "(?i)beating"), "abuse", NA_character_),
+    if_else(str_detect(details_clean, "(?i)paroled"), "labor", NA_character_),
+    if_else(str_detect(details_clean, "(?i)ragged"), "abuse", NA_character_),
+    if_else(str_detect(details_clean, "(?i)incorrigible"), "boy_offenses", NA_character_),
+    if_else(str_detect(details_clean, "(?i)manslaughter"), "boy_offense", NA_character_),
+    if_else(str_detect(details_clean, "(?i)lawsuit"), "investigations", NA_character_),
+    if_else(str_detect(details_clean, "(?i)barefoot"), "abuse", NA_character_),
+    sep = "; "
+  )) |> 
+  mutate(category = str_remove_all(category, "NA; |; NA")) |> 
+  mutate(category = na_if(category, "NA"))
+```
+
 
 3) Start on the death certificate reponses
 
 https://docs.google.com/spreadsheets/d/13CthhhfLHiPZqr1P67SCa9BVUyb5Rl6OBhUwvqawDEk/edit?usp=sharing
 "Notes for anything of interest"
+
+#I used the code to create a data frame and renamed the notes for anything of interest into details so that the title is not drawn out.
 
 ```{r}
 gs4_deauth()  
@@ -150,6 +246,8 @@ DC_Responses <- read_sheet("https://docs.google.com/spreadsheets/d/13CthhhfLHiPZ
      clean_names() |> 
   rename(details = notes_for_anything_of_interest)
 ```
+
+#This code tokenizes the data frame, and unnests it which includes lower case words and removes punctuation. I then make a list of common words.
 ```{r}
 DC_writing <- str_replace_all(DC_Responses$details, "- ", "")
 DC_writing_df <- tibble(DC_writing,)
@@ -160,6 +258,7 @@ DC_writing_tokenized <- DC_writing_df %>%
 DC_writing_tokenized
 ```
 
+##The code makes a list of top words, cleaned with stop words removed.
 ```{r}
 data(stop_words)
 
@@ -173,6 +272,7 @@ word_count <- DC_writing_tokenized %>%
   count(word, sort=TRUE)
 ```
 
+#The code creates a DC bigrams data frame without stop words.
 ```{r}
 DC_bigrams <- DC_writing_df %>%
   unnest_tokens(bigram, DC_writing, token="ngrams", n=2) |> 
@@ -182,6 +282,7 @@ DC_count_bigrams <- DC_bigrams %>%
   count(word1, word2, sort = TRUE)
 ```
 
+#The code includes stop words in the DC bigrams data frame.
 ```{r}
 DC_bigrams_clean <-DC_writing_df %>%
   unnest_tokens(DC_bigram, DC_writing, token="ngrams", n=2) |> 
@@ -194,6 +295,7 @@ DC_count_clean_bigrams <- DC_bigrams_clean  %>%
   count(word1, word2, sort = TRUE)
 ```
 
+## Here, I categorized the material by occupation, medical code and diagnosis, since those were the most common themes I saw when reading through the cleaned DC bigrams data frame.
 ```{r}
 DC_Responses <- DC_Responses |> 
   mutate(details_clean = str_squish(str_remove_all(details, "[[:punct:]]"))) |> 
