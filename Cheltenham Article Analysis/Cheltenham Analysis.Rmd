@@ -23,7 +23,7 @@ library(ggthemes)
 ```
 
 ```{r}
-Cheltenham_ex <- read_csv("Cheltenham_Article_Data_Extraction.csv") %>% clean_names()
+Cheltenham_ex <- read_csv("Cheltenham Article Data Extraction.csv") %>% clean_names()
 ```
 
 ```{r}
@@ -31,6 +31,7 @@ Cheltenham_ex <- Cheltenham_ex %>%
   mutate(date_of_article = mdy(date_of_article))
 ```
 
+#This code counts the newspaper names.
 ```{r}
 Cheltenham_ex %>% 
    group_by(newspaper_name) %>% 
@@ -38,12 +39,14 @@ Cheltenham_ex %>%
   arrange(desc(count))
 ```
 
+#This code counts the articles over time. 
 ```{r}
 Dated_Cheltenham_ex <- Cheltenham_ex %>% 
    group_by(newspaper_name, date_of_article) %>% 
     summarize(count = n()) %>% 
   arrange(date_of_article)
 ```
+#The code arranges the articles into different catageorizes.
 ```{r}
 article_type <- Cheltenham_ex %>% 
    group_by(article_type) %>% 
@@ -51,6 +54,7 @@ article_type <- Cheltenham_ex %>%
   arrange(article_type)
 ```
 
+#This code creates a data frame of the amount of articles published each year from least to greatest.
 ```{r}
 yearly_Cheltenham <- Cheltenham_ex %>% 
   mutate(year = year(date_of_article)) %>% 
@@ -59,6 +63,7 @@ yearly_Cheltenham <- Cheltenham_ex %>%
   arrange(count)
 ```
 
+#This code creates a bargraph of the amount of articles published yearly. 
 ```{r}
 yearly_Cheltenham %>%
   ggplot(aes(x = year, y = count)) +
