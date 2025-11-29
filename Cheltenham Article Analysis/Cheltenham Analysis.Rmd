@@ -20,11 +20,10 @@ library(ggplot2)
 library(ggrepel)
 library(tidycensus)
 library(ggthemes)
-
 ```
 
 ```{r}
-Cheltenham_ex <- read_csv("C:/Users/frago/Downloads/Cheltenham Article Data Extraction (Responses) AK & BF - Form Responses 1 (2).csv") %>% clean_names()
+Cheltenham_ex <- read_csv("Cheltenham_Article_Data_Extraction.csv") %>% clean_names()
 ```
 
 ```{r}
